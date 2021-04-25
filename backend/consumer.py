@@ -79,8 +79,21 @@ def on_message(client, userdata, msg) -> None:
         port=userdata.redis.port,
         db=userdata.redis.db,
     )
-    _redis.lpush(data["device"], json.dumps(data))
+    _redis.rpush(data["device"], json.dumps(data))
     print(f"Correctly received {data}")
+
+
+def flush_redis(redis_config) -> None:
+    """
+    flush all keys in redis to reset display
+    :param redis_config: redis configuration
+    """
+    _redis = redis.StrictRedis(
+        host=redis_config.host,
+        port=redis_config.port,
+        db=redis_config.db,
+    )
+    _redis.flushall()
 
 
 def main():
@@ -99,6 +112,7 @@ def main():
     )
     config = Config(redis_config, mqtt_config)
 
+    flush_redis(redis_config)
     client = mqtt.Client()
     client.user_data_set(config)
     client.username_pw_set(
