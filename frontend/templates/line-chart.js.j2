@@ -1,0 +1,25 @@
+// === setup chart ===
+const lineChartLabels = [{{ labels | join(', ') }}]
+const lineChartData = {
+    labels: lineChartLabels,
+    datasets: [{
+        label: 'green',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: [{{ green_values | join(', ') }}],
+    },
+    ]
+};
+
+// === config chart ===
+const lineChartConfig = {
+    type: 'line',
+    data: lineChartData,
+    options: {}
+};
+
+// === display chart ===
+var myLineChart = new Chart(
+    document.getElementById('line_chart'),
+    lineChartConfig
+);
