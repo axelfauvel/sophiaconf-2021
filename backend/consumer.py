@@ -5,7 +5,7 @@ import argparse
 import json
 import os
 from collections import namedtuple
-from time import time
+from time import time, sleep
 
 import configargparse
 import paho.mqtt.client as mqtt
@@ -50,7 +50,6 @@ def on_connect(client, userdata, flags, rc) -> None:
     :type rc: [type]
     """
     print(f"Connected with result code {str(rc)}")
-    client.subscribe(userdata.mqtt.topic)
 
 
 def on_message(client, userdata, msg) -> None:
@@ -96,6 +95,17 @@ def flush_redis(redis_config) -> None:
     _redis.flushall()
 
 
+def reset_devices(mqtt_client, redis_config) -> None:
+    """
+    send start message that will reinitialise connected devices
+    and wait 5 seconds
+    """
+    print("Sending reset message")
+    mqtt_client.publish("sophiaconf/start", payload=None, qos=0, retain=False)
+    flush_redis(redis_config)
+    sleep(5)
+
+
 def main():
     """
     retrieves argument, create configuration objects then starts the consumer
@@ -112,8 +122,7 @@ def main():
     )
     config = Config(redis_config, mqtt_config)
 
-    flush_redis(redis_config)
-    client = mqtt.Client()
+    client = mqtt.Client(clean_session=True, client_id="consumer")
     client.user_data_set(config)
     client.username_pw_set(
         mqtt_config.user,
@@ -122,7 +131,8 @@ def main():
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(mqtt_config.host, mqtt_config.port, mqtt_config.keepalive)
-
+    reset_devices(client, redis_config)
+    client.subscribe(mqtt_config.topic)
     client.loop_forever()
 
 
