@@ -9,7 +9,8 @@ from m5ui import setScreenColor, M5TextBox
 from uiflow import wait_ms, wait
 
 from config import (
-    DEVICE,
+    DEVICE_NAME,
+    DEVICE_COLOR,
     WIFI_SSID,
     WIFI_PASSPHRASE,
     MQTT_HOST,
@@ -41,7 +42,7 @@ def connect_wifi():
 def init_mqtt():
     global MQTT
     MQTT = M5mqtt(
-        DEVICE,
+        DEVICE_NAME,
         MQTT_HOST,
         1883,
         MQTT_USER,
@@ -73,7 +74,7 @@ def countdown():
     wait(1)
     countdown.setText("0")
     wait(1)
-    setScreenColor(0x33FF33)
+    setScreenColor(DEVICE_COLOR)
 
 
 def reset_glapz_and_time():
@@ -97,7 +98,9 @@ def tsend_data():
     current_time = round((time.ticks_ms() - START_TIME) / 1000)
     MQTT.publish(
         MQTT_TOPIC_PUBLISH,
-        json.dumps({"device": DEVICE, "value": GLAPZ, "time": current_time}),
+        json.dumps(
+            {"device": DEVICE_NAME, "value": GLAPZ, "time": current_time}
+        ),
     )
 
 
@@ -115,7 +118,7 @@ if __name__ == "__main__":
     timerSch.run("send_data", 1000, 0x00)
 
     # init display
-    setScreenColor(0x33FF33)
+    setScreenColor(DEVICE_COLOR)
     DISP_GLAPZ = M5TextBox(
         43, 19, "0 glapz", lcd.FONT_DejaVu24, 0x0F0F0F, rotate=90
     )
@@ -127,5 +130,5 @@ if __name__ == "__main__":
         DISP_TITLE.show()
         DISP_GLAPZ.show()
         glapzometro()
-        DISP_GLAPZ.setText(str((str(round(GLAPZ)) + str(" glapz"))))
+        DISP_GLAPZ.setText(str(round(GLAPZ)) + " glapz")
         wait_ms(2)
