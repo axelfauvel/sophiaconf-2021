@@ -30,11 +30,9 @@ def glapzometro():
 
 def connect_wifi():
     print("Starting Wi-Fi")
-    # wifiCfg.doConnect("OnePlus 5T", "Akwel2000")
-    # wifiCfg.doConnect("Laitue", "srtk8avc53infn9fir84")
     while wifiCfg.is_connected() is False:
         print("Attempting connection")
-        wifiCfg.doConnect("Laitue", "srtk8avc53infn9fir84")
+        wifiCfg.doConnect(WIFI_SSID, WIFI_PASSPHRASE)
         wait_ms(5000)
     print("Wifi is connected")
 
