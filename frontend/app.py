@@ -30,14 +30,16 @@ def bar_chart_js():
 
 @app.route("/line-chart.js")
 def line_chart_js():
+    labels = [0]
     charts = deepcopy(CHARTS)
-    for idx, chart in enumerate(charts):
+
+    for chart in charts:
         result = get_device_data(chart["color"])
         if result:
             labels = [element["time"] for element in result]
             chart["data"] = [element["value"] for element in result]
-        else:
-            charts.pop(idx)
+
+    charts = [chart for chart in charts if chart["data"]]
 
     return render_template("line-chart.js.j2", labels=labels, charts=charts)
 

@@ -1,7 +1,11 @@
 import redis
 import json
 
+
 def get_device_data(device):
+    """
+    retrieve data for a given device from redis
+    """
     _redis = redis.StrictRedis(
         host="127.0.0.1",
         port=6379,
