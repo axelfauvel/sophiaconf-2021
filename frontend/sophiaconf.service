@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve sophiaconf
+After=network.target
+
+[Service]
+User=afauvel
+Group=www-data
+WorkingDirectory=/home/afauvel/conf_af_tv_sophia_2021/frontend
+Environment="PATH=/home/afauvel/.virtualenvs/conf_af_tv_sophia_2021/bin/"
+ExecStart=/home/afauvel/.virtualenvs/conf_af_tv_sophia_2021/bin/gunicorn --workers 3 --bind unix:sophiaconf.sock -m 007 app:app
+
+[Install]
+WantedBy=multi-user.target
