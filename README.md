@@ -21,4 +21,4 @@ Once it's done, upload `config.py` and `main.py` to your m5stick using `ampy`
 
 `ampy -p /dev/tty.usbserial-6152A0EFA8 --baud 115200 put main.py /flash/main.py`
 
-`ampy -p /dev/tty.usbserial-6152A0EFA8 --baud 115200 put boot.py /flash/boot.py`
+`ampy -p /dev/tty.usbserial-6152A0EFA8 --baud 115200 put config.py /flash/config.py`
